@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 logic.md
 .DS_Store
+workbench/
