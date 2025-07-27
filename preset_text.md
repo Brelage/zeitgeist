@@ -1,2 +1,0 @@
-## Das Wichtigste in Kürze
-
