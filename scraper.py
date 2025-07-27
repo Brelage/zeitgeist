@@ -1,7 +1,8 @@
 import requests
 import logging
-from logging.handlers import TimedRotatingFileHandler
 import os
+from datetime import datetime
+from logging.handlers import TimedRotatingFileHandler
 
 from bs4 import BeautifulSoup as bs
 
@@ -16,23 +17,20 @@ class Scraper:
     def __init__(self):
         self.zeit_url = "https://www.zeit.de/index"
         self.tagesschau_url = "https://www.tagesschau.de/"
-        
-        self.zeit_website = None
-        self.tagesschau_website = None
-        
-        self.setup_logger()
-        
+        self.today = datetime.now().date()
 
+        self.logger = self.setup_logger()
+        
 
     def setup_logger(self):
 
         logs_path = os.path.join("logs")
         os.makedirs(logs_path, exist_ok=True)
         
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(LOG_LEVEL)  
+        logger = logging.getLogger(__name__)
+        logger.setLevel(LOG_LEVEL)  
 
-        if not self.logger.handlers:
+        if not logger.handlers:
             formatter = logging.Formatter(fmt="%(asctime)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
             
             ## config for the .log file generated
@@ -42,11 +40,13 @@ class Scraper:
                 backupCount=3
             )
             file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
+            logger.addHandler(file_handler)
             
             stream_handler = logging.StreamHandler()
             stream_handler.setFormatter(formatter)
-            self.logger.addHandler(stream_handler)
+            logger.addHandler(stream_handler)
+
+            return logger
 
 
     def scrape(self):
@@ -58,10 +58,26 @@ class Scraper:
 
             if self.logger.isEnabledFor(logging.DEBUG):
                 os.makedirs("workbench", exist_ok=True)
-                with open(f"workbench/soup_html_{self.parent.today}.html", "w") as file:
+                with open(f"workbench/soup_html_{self.today}.html", "w") as file:
                     file.write(soup.prettify())
-        except:
+
+            match = soup.find_all("section", 
+                                    class_="cp-area cp-area--headed",
+                                    attrs= {"data-ct-context": "headed-das_wichtigste_in_kuerze"})
+            headlines = match[0].find("div", class_="zon-markup-with-author__content")
+            paragraphs = headlines.find_all("p")
+            paragraphs[-1].decompose()
+            self.logger.info("successfully extracted headlines")
+
+            if self.logger.isEnabledFor(logging.DEBUG):
+                with open(f"workbench/match{self.today}.html", "w") as file:
+                        file.write(str(headlines))
+        
+        except Exception as e:
             self.logger.error("could not scrape successfully")
+            self.logger.error(f"{e}")
+
+
 
 if __name__ == "__main__":
     main()
