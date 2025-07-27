@@ -1,2 +1,2 @@
 # zeitgeist
-a webscraper that grabs only the "Das Wichtigste in Kürze" daily summary of the Zeit Online Website
+An automation script that gathers headlines from a set of news sources, sends it to an Email address, and builds an archive of daily news.
