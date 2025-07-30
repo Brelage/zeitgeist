@@ -5,17 +5,16 @@ from logging.handlers import TimedRotatingFileHandler
 
 LOG_LEVEL = logging.DEBUG
 
-def setup_logger():
+def setup_logger(name=None):
     logs_path = os.path.join("logs")
     os.makedirs(logs_path, exist_ok=True)
     
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(name)
     logger.setLevel(LOG_LEVEL)  
 
     if not logger.handlers:
-        formatter = logging.Formatter(fmt="%(name)s %(asctime)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
+        formatter = logging.Formatter(fmt="%(module)s - %(asctime)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
         
-        ## config for the .log file generated
         file_handler = TimedRotatingFileHandler(
             f"logs/{__name__}.log",
             when="midnight",
