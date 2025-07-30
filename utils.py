@@ -1,5 +1,6 @@
 import logging
 import os
+import yaml
 from logging.handlers import TimedRotatingFileHandler
 
 
@@ -28,10 +29,19 @@ def setup_logger(name=None):
         logger.addHandler(stream_handler)
 
         return logger
-    
+
+
+def load_source(adress=None):
+    with open("sources.yaml", "r") as file:
+        data = yaml.safe_load(file)
+        source = data[adress]
+        return source
+
 
 def archive(data):
     """
     archives the data from the sources to the database
     """
-    pass
+    
+    capsule = None
+    return capsule
