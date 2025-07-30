@@ -1,11 +1,8 @@
 import subprocess
-import fetch_tagesschau
-import scrape_zeit
-
 
 def main():
-    subprocess.run(scrape_zeit)
-    subprocess.run(fetch_tagesschau)
+    subprocess.run(["python3", "scrape_zeit.py"])
+    subprocess.run(["python3", "fetch_tagesschau.py"])
 
 
 if __name__ == "__main__":
