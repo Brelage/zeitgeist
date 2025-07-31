@@ -33,7 +33,7 @@ class Fetcher:
 
         if self.logger.isEnabledFor(logging.DEBUG):
             os.makedirs("workbench", exist_ok=True)
-            with open(f"workbench/tagesschau{self.today}.html", "w") as file:
+            with open(f"workbench/{self.today}tagesschau.html", "w") as file:
                     file.write(str(tagesschau_news))
 
 
