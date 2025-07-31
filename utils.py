@@ -31,7 +31,7 @@ def setup_logger(name=None):
         return logger
 
 
-def load_source(adress=None):
+def load_source(adress):
     with open("sources.yaml", "r") as file:
         data = yaml.safe_load(file)
         source = data[adress]
