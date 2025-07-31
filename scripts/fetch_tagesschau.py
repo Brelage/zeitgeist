@@ -1,8 +1,13 @@
 import requests
 import os
 import logging
+import sys
+from pathlib import Path
 from datetime import datetime
-from utils import setup_logger, load_source
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from app.utils import setup_logger, load_source
+
 
 
 def main():
