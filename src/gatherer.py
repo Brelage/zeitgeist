@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 import subprocess
 
-SCRIPTS_DIR = Path(__file__).parent / "scripts"
-os.environ["SOURCES_YAML"] = "config/sources.yaml"
+SCRIPTS_DIR = Path(__file__).parent / "gathering_scripts"
 
 def main():
     procs = [

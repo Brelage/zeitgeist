@@ -6,18 +6,16 @@ from pathlib import Path
 from datetime import datetime
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from app.utils import setup_logger, load_source
-
-
+from utils import setup_logger
 
 def main():
-    fetcher = Fetcher()
-    fetcher.fetch_tagesschau_headlines()
+    gatherer = Gatherer()
+    gatherer.fetch_tagesschau_headlines()
 
-class Fetcher:
+class Gatherer:
     def __init__(self):
         self.logger = setup_logger(__name__)
-        self.source = load_source("tagesschau")
+        self.source = "https://www.tagesschau.de/api2u/homepage/"
         self.today = datetime.now().date()
 
 

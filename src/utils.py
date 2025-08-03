@@ -1,11 +1,6 @@
 import logging
 import os
-import yaml
-import sys
-from pathlib import Path
 from logging.handlers import TimedRotatingFileHandler
-
-sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 LOG_LEVEL = logging.DEBUG
 
@@ -32,16 +27,6 @@ def setup_logger(name=None):
         logger.addHandler(stream_handler)
 
         return logger
-
-
-def load_source(adress):
-    config_path = os.environ.get("SOURCES_YAML")
-    if config_path is None:
-        raise ValueError("SOURCES_YAML environment variable not set")
-    with open(config_path, "r") as file:
-        data = yaml.safe_load(file)
-        source = data[adress]
-        return source
 
 
 def archive(data):

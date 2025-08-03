@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zeitgeist"
+description = "a news gatherer and archive, providing daily briefings and perspective"
+authors = [
+    { name='Noah Brelage' }
+]
+
+dependencies = [
+    "beautifulsoup4==4.13.4",
+    "bs4==0.0.2",
+    "certifi==2025.7.14",
+    "charset-normalizer==3.4.2",
+    "idna==3.10",
+    "lxml==6.0.0",
+    "PyYAML==6.0.2",
+    "requests==2.32.4",
+    "soupsieve==2.7",
+    "typing_extensions==4.14.1",
+    "urllib3==2.5.0"
+]

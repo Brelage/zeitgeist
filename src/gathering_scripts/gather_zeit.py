@@ -7,19 +7,19 @@ from datetime import datetime
 from bs4 import BeautifulSoup as bs
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from app.utils import setup_logger, load_source
+from utils import setup_logger
 
 def main():
-    scraper = Scraper()
-    scraper.scrape_headlines()
-    scraper.scrape_most_read()
+    gatherer = Gatherer()
+    gatherer.scrape_headlines()
+    gatherer.scrape_most_read()
 
 
 
-class Scraper:
+class Gatherer:
     def __init__(self):
         self.logger = setup_logger(__name__)
-        self.source = load_source("zeit")
+        self.source = "https://www.zeit.de/index"
         self.today = datetime.now().date()
         self.soup = self.get_soup()
 
@@ -44,16 +44,18 @@ class Scraper:
 
 
     def scrape_headlines(self):
-        match = self.soup.find_all("section", 
-                                class_="cp-area cp-area--headed",
-                                attrs= {"data-ct-context": "headed-das_wichtigste_in_kuerze"})
+        match = self.soup.find_all("section",
+                                   class_="cp-area cp-area--headed",
+                                   attrs= {"data-ct-context": "headed-das_wichtigste_in_kuerze"})
         headlines = match[0].find("div", class_="zon-markup-with-author__content")
         paragraphs = headlines.find_all("p")
         paragraphs[-1].decompose()
         del paragraphs[-1]
         headlines_p = "".join(str(p) for p in paragraphs if p is not None and getattr(p, "name", None) is not None)
-        
-        self.logger.info("successfully extracted headlines from 'Das Wichtigste in Kürze'")
+
+
+
+        self.logger.info("successfully gathered headlines from 'Das Wichtigste in Kürze'")
 
         if self.logger.isEnabledFor(logging.DEBUG):
             os.makedirs("workbench", exist_ok=True)
