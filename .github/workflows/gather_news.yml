@@ -1,0 +1,24 @@
+name: gather news
+
+on:
+  schedule:
+    # Runs every day at 20:00 UTC
+    - cron: '0 20 * * *'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: run script
+        run: python3 src/gatherer.py
