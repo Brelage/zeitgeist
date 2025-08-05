@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import re
+import fcntl
 from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
@@ -79,6 +80,11 @@ class Gatherer:
 
     def save_capsule(self):
         with open(self.archive, "a", encoding="utf-8") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            try:
                 for l in self.capsule:
                     f.write(json.dumps(l, ensure_ascii=False) + "\n")
+            finally:
+                fcntl.flock(f, fcntl.LOCK_UN)
+                
         self.logger.info("finished writing news to capsule")
