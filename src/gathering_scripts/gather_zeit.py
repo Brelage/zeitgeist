@@ -11,7 +11,7 @@ from utils import Gatherer
 def main():
     gatherer = Zeit()
     gatherer.scrape_headlines()
-    #gatherer.scrape_most_read()
+    gatherer.scrape_most_read()
     gatherer.save_capsule()
 
 
@@ -101,23 +101,42 @@ class Zeit(Gatherer):
         if not most_read_section:
             self.logger.error("Could not find 'Meistgelesen' section")
             return
-        
-        # Extract articles data from the Meistgelesen section
-        most_read = most_read_section.find("div", class_="kpi-area__teasers")
-    
-        if not most_read:
+
+        teaser_container = most_read_section.find("div", class_="kpi-area__teasers")
+        if not teaser_container:
             self.logger.error("Could not find articles container")
-            return
-        
+            return 
+
+        for article in (teaser_container.find_all("article", class_="zon-teaser")):
+            try:
+                # Extract topic (kicker text)
+                kicker_element = article.find("a", class_="zon-teaser__faux-link")
+                title = kicker_element.get_text().strip() if kicker_element else ""
+                
+                # Extract URL
+                link_element = article.find("a", class_="zon-teaser__link")
+                url = link_element.get("href") if link_element else ""
+                
+                # Extract description (summary text)
+                summary_element = article.find("p", class_="zon-teaser__summary")
+                content = summary_element.get_text().strip() if summary_element else ""
+                
+                # Create article dictionary
+                capsule_part = self.create_json_structure(
+                    title=title,
+                    content=content,
+                    url=url,
+                    source=self.source,
+                    language="de"
+                )
+                self.capsule.append(capsule_part)
+                
+            except Exception as e:
+                self.logger.error(f"Error processing article: {e}")
+                continue
+
+
         self.logger.info("Successfully extracted 'Meistgelesen' section")
-
-        if self.logger.isEnabledFor(logging.DEBUG):
-            os.makedirs("workbench", exist_ok=True)
-            with open(f"workbench/{self.today}most_read.html", "w") as file:
-                    soup = bs(str(most_read), "lxml")
-                    file.write(soup.prettify())
-
-        return most_read
 
 
 
