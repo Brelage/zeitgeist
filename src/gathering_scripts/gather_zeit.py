@@ -3,24 +3,23 @@ import logging
 import os
 import sys
 from pathlib import Path
-from datetime import datetime
 from bs4 import BeautifulSoup as bs
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from utils import setup_logger
+from utils import Gatherer
 
 def main():
-    gatherer = Gatherer()
+    gatherer = Zeit()
     gatherer.scrape_headlines()
-    gatherer.scrape_most_read()
+    #gatherer.scrape_most_read()
+    gatherer.save_capsule()
 
 
 
-class Gatherer:
+class Zeit(Gatherer):
     def __init__(self):
-        self.logger = setup_logger(__name__)
+        super().__init__()
         self.source = "https://www.zeit.de/index"
-        self.today = datetime.now().date()
         self.soup = self.get_soup()
 
 
@@ -30,11 +29,6 @@ class Gatherer:
             self.logger.debug(f"status code: {response.status_code}")
             self.logger.info("successfully reached %s", self.source)
             soup = bs(response.text, "lxml")
-
-            if self.logger.isEnabledFor(logging.DEBUG):
-                os.makedirs("workbench", exist_ok=True)
-                with open(f"workbench/{self.today}_zeit.html", "w") as file:
-                    file.write(soup.prettify())
             
             return soup
         
@@ -51,17 +45,38 @@ class Gatherer:
         paragraphs = headlines.find_all("p")
         paragraphs[-1].decompose()
         del paragraphs[-1]
-        headlines_p = "".join(str(p) for p in paragraphs if p is not None and getattr(p, "name", None) is not None)
 
+        for paragraph in paragraphs:
+            try:
+                # Extract components
+                strong_tag = paragraph.find("strong")
+                link_tag = paragraph.find("a")
+                
+                title = strong_tag.get_text().strip() if strong_tag else ""
+                url = link_tag.get("href") if link_tag else ""
+                
+                # Get full text and remove title part
+                full_text = paragraph.get_text()
+                if title:
+                    content = full_text.replace(title, "", 1).strip().lstrip(':').strip()
+                else:
+                    content = full_text.strip()
+                
+                capsule_part = self.create_json_structure(
+                    title=title,
+                    content=content,
+                    url=url,
+                    source=self.source,
+                    language="de"
+                )
+                self.capsule.append(capsule_part)
+            
 
-
+            except Exception as e:
+                self.logger.error(f"Error processing paragraph: {e}")
+                continue
+            
         self.logger.info("successfully gathered headlines from 'Das Wichtigste in Kürze'")
-
-        if self.logger.isEnabledFor(logging.DEBUG):
-            os.makedirs("workbench", exist_ok=True)
-            with open(f"workbench/{self.today}headlines.html", "w") as file:
-                    soup = bs(headlines_p, "lxml")
-                    file.write(soup.prettify())
 
 
     def scrape_most_read(self):
