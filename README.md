@@ -1,5 +1,5 @@
 # zeitgeist
-An automation script that gathers headlines from a set of news sources, sends it to an Email address, and builds an archive of daily news.
+a news gatherer and archive, providing daily briefings and perspective
 
 The dataset enables the following analysis:
 1. Track political figures: "How often is 'Scholz' mentioned vs 'Merz'?"
