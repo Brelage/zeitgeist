@@ -5,9 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "zeitgeist"
 description = "a news gatherer and archive, providing daily briefings and perspective"
+readme = README.md
+license = { file = "LICENSE" }
 authors = [
     { name='Noah Brelage' }
-]
+]   
 
 dependencies = [
     "beautifulsoup4==4.13.4",
@@ -22,3 +24,6 @@ dependencies = [
     "typing_extensions==4.14.1",
     "urllib3==2.5.0"
 ]
+
+[project.url]
+Repository = 'https://github.com/Brelage/zeitgeist'
