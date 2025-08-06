@@ -19,7 +19,7 @@ def setup_logger(name=None):
     standard logging setup for every other script.
 
     Args:
-        name: usually the __name__ variable to identify the script
+        name: usually the __name__ special variable to identify the script
     """
     logs_path = os.path.join("logs")
     os.makedirs(logs_path, exist_ok=True)
