@@ -15,6 +15,12 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 
 def setup_logger(name=None):
+    """
+    standard logging setup for every other script.
+
+    Args:
+        name: usually the __name__ variable to identify the script
+    """
     logs_path = os.path.join("logs")
     os.makedirs(logs_path, exist_ok=True)
     
@@ -40,6 +46,10 @@ def setup_logger(name=None):
 
 
 class Gatherer:
+    """
+    baseline class for data gathering automations. 
+    Use this class with inheritance to ensure standardized logging, behavior, and JSON structure for the capsules
+    """
     def __init__(self):
         self.logger = setup_logger(__name__)
         self.today = datetime.now().date().isoformat()
@@ -48,6 +58,10 @@ class Gatherer:
 
 
     def clean_html_content(self, html_text):
+        """
+        takes HTML and strips all formatting out, leaving only the pure text
+        html_text: string with HTML
+        """
         soup = BeautifulSoup(html_text, 'lxml')
         for script in soup(["script", "style"]):
             script.decompose()
@@ -56,8 +70,22 @@ class Gatherer:
         text = text.strip()
         return text
 
+
     def create_json_structure(self, title, content, url, source, language, **optional_fields):
-        """Create standardized JSON structure for archival entry"""
+        """
+        Create standardized JSON structure of a news article for archival entry.
+
+        Args: 
+            title(str): the title of a news story
+            content(str): the text of a news story
+            url(str): the URL linking to the news story directly
+            source(str): the news site that was used to gahter the data. Usually defined in the gather script as self.source
+            language(str): the language of the news story
+        
+        Returns:
+            a JSON dictionary containing information about an article
+
+        """
         article = {
             # Required fields
             "gathered_date": str(self.today),
@@ -79,6 +107,9 @@ class Gatherer:
 
 
     def save_capsule(self):
+        """
+        locks the data/archive.jsonl file and appends the capsule to it before releasing, thereby avoiding race conditions.
+        """
         with open(self.archive, "a", encoding="utf-8") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
             try:
