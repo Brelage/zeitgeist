@@ -65,7 +65,8 @@ class Zeit(Gatherer):
                     content=content,
                     url=url,
                     source=self.source,
-                    language="de"
+                    language="de",
+                    is_breaking_news=True
                 )
                 self.capsule.append(capsule_part)
             
