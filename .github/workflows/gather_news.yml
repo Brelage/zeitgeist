@@ -2,7 +2,7 @@ name: gather news
 
 on:
   schedule:
-    # Runs every day at 20:00 UTC
+    # Runs every day at 19:00 UTC
     - cron: '0 19 * * *'
   workflow_dispatch:
 
