@@ -43,6 +43,7 @@ def read_daily_news():
 def save_briefing(briefing):
     for i in briefing:
         line_item = i["title"]
+        print(line_item)
 
 
 
