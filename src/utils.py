@@ -71,6 +71,19 @@ class Gatherer:
         return text
 
 
+    def dot_parse(text):
+        """
+        Inserts a space after every dot in the text if the dot is followed by
+        an uppercase letter (A-Z, Ä, Ö, Ü), unless the dot is already followed by
+        a space, another dot, a double quote, or a digit.
+        """
+        return re.sub(
+            r'\.(?![\s."\d])(?=[A-ZÄÖÜ])',
+            '. ',
+            text
+        )
+
+
     def create_json_structure(self, title, content, url, source, language, **optional_fields):
         """
         Create standardized JSON structure of a news article for archival entry.

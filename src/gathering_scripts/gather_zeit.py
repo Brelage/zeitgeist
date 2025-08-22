@@ -56,9 +56,9 @@ class Zeit(Gatherer):
                 # Get full text and remove title part
                 full_text = paragraph.get_text()
                 if title:
-                    content = full_text.replace(title, "", 1).strip().lstrip(':').strip()
+                    content = self.dot_parse(full_text.replace(title, "", 1).strip().lstrip(':').strip())
                 else:
-                    content = full_text.strip()
+                    content = self.dot_parse(full_text.strip())
                 
                 capsule_part = self.create_json_structure(
                     title=title,
@@ -118,7 +118,7 @@ class Zeit(Gatherer):
                 
                 # Extract description (summary text)
                 summary_element = article.find("p", class_="zon-teaser__summary")
-                content = summary_element.get_text().strip() if summary_element else ""
+                content = self.dot_parse(summary_element.get_text().strip() if summary_element else "")
                 
                 # Create article dictionary
                 capsule_part = self.create_json_structure(

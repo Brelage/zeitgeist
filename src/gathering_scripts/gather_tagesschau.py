@@ -25,18 +25,18 @@ class Tagesschau(Gatherer):
         
         for item in news[:5]:
             title = item["title"]
-            content = item.get("content", [])
+            text = item.get("content", [])
             link = item["detailsweb"]
-            text = ""
-            for entry in content[:4]:
-                text += entry.get("value", "")
-            text = self.clean_html_content(text)
+            content = ""
+            for entry in text[:4]:
+                content += entry.get("value", "")
+            content = self.dot_parse(self.clean_html_content(content))
             category = item.get("ressort")
             breaking_news = item["breakingNews"]
             
             capsule_part = self.create_json_structure(
                 title,
-                text,
+                content,
                 link,
                 self.source,
                 language="de",
