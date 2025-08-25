@@ -71,7 +71,7 @@ class Gatherer:
         return text
 
 
-    def dot_parse(text):
+    def dot_parse(self, text):
         """
         Inserts a space after every dot in the text if the dot is followed by
         an uppercase letter (A-Z, Ä, Ö, Ü), unless the dot is already followed by
@@ -123,12 +123,15 @@ class Gatherer:
         """
         locks the data/archive.jsonl file and appends the capsule to it before releasing, thereby avoiding race conditions.
         """
-        with open(self.archive, "a", encoding="utf-8") as f:
-            fcntl.flock(f, fcntl.LOCK_EX)
-            try:
-                for l in self.capsule:
-                    f.write(json.dumps(l, ensure_ascii=False) + "\n")
-            finally:
-                fcntl.flock(f, fcntl.LOCK_UN)
-                
-        self.logger.info("finished writing news to capsule")
+        if self.capsule:
+            with open(self.archive, "a", encoding="utf-8") as f:
+                fcntl.flock(f, fcntl.LOCK_EX)
+                try:
+                    for l in self.capsule:
+                        f.write(json.dumps(l, ensure_ascii=False) + "\n")
+                finally:
+                    fcntl.flock(f, fcntl.LOCK_UN)
+                    
+            self.logger.info("finished writing news to capsule")
+        else:
+            self.logger.error("Error saving capsule: capsule is empty")
