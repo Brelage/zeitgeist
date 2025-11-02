@@ -10,7 +10,10 @@ on:
 jobs:
   generate-capsule:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success')
 
     steps:
       - name: Checkout repository
@@ -35,3 +38,5 @@ jobs:
           git add data/capsules/*.md
           git commit -m "Add daily news capsule for $(date +'%Y-%m-%d')"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
