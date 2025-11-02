@@ -5,6 +5,12 @@ on:
     workflows: ["gather news"]
     types:
       - completed
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Environment
+        required: false
+        default: staging
 
 jobs:
   generate-capsule:
