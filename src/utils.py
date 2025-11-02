@@ -4,6 +4,7 @@ import sys
 import json
 import re
 import fcntl
+import inspect
 from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
@@ -21,6 +22,14 @@ def setup_logger(name=None):
     Args:
         name: usually the __name__ special variable to identify the script
     """
+    if name is None:
+        # Get the frame of the caller
+        frame = inspect.stack()[1]
+        # Get the filename from the frame
+        filename = frame.filename
+        # Create the logger name from the filename
+        name = os.path.splitext(os.path.basename(filename))[0]
+
     logs_path = os.path.join("logs")
     os.makedirs(logs_path, exist_ok=True)
     
@@ -28,10 +37,10 @@ def setup_logger(name=None):
     logger.setLevel(LOG_LEVEL)  
 
     if not logger.handlers:
-        formatter = logging.Formatter(fmt="%(module)s - %(asctime)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
+        formatter = logging.Formatter(fmt="%(name)s - %(asctime)s: %(message)s", datefmt="%Y.%m.%d %H:%M:%S")
         
         file_handler = TimedRotatingFileHandler(
-            f"logs/{__name__}.log",
+            f"logs/{name}.log",
             when="midnight",
             backupCount=3
         )
