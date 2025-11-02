@@ -40,7 +40,6 @@ def generate_capsule(file_path: str, capsule_date: str = None):
     capsule_content = f"# News Capsule for {target_date.isoformat()}\n\n"
     for article in day_articles:
         capsule_content += f"## {article['title']}\n\n"
-        capsule_content += f"> Source: {article['source']}\n"
         capsule_content += f"> URL: {article['url']}\n\n"
         capsule_content += f"{article['content']}\n\n"
         capsule_content += "---\n\n"
