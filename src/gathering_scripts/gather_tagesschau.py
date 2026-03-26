@@ -32,7 +32,7 @@ class Tagesschau(Gatherer):
                 value = self.clean_html_content(entry.get("value", "")).rstrip(". ")
                 if value:
                     entries.append(value)
-            content = self.dot_parse(". ".join(entries) + ". " if entries else "")
+            content = self.normalize_content(". ".join(entries))
             category = item.get("ressort")
             breaking_news = item["breakingNews"]
             
