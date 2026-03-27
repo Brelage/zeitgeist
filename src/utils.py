@@ -95,11 +95,13 @@ class Gatherer:
 
     def normalize_content(self, text):
         """
-        Applies dot_parse, then ensures the text ends with exactly one period
-        and a space. Returns an empty string if the input is empty.
+        Applies dot_parse to fix mid-text sentence spacing, then ensures the
+        text ends with exactly one trailing space. Terminal punctuation from
+        the source data (., ?, !, ") is preserved as-is. Returns an empty
+        string if the input is empty.
         """
-        text = self.dot_parse(text).rstrip(". ")
-        return text + ". " if text else ""
+        text = self.dot_parse(text).rstrip()
+        return text + " " if text else ""
 
 
     def create_json_structure(self, title, content, url, source, language, **optional_fields):
