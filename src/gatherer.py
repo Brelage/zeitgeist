@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess
 
 os.makedirs("workbench", exist_ok=True)
-SCRIPTS_DIR = Path(__file__).parent / "gathering_scripts"
+SCRIPTS_DIR = Path(__file__).parent / "gatherer_sources"
 
 def main():
     for file_name in os.listdir(SCRIPTS_DIR):
