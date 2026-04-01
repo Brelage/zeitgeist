@@ -30,7 +30,7 @@ Setup
 `pip install -r requirements.txt`
 
 
-3. run the `src/gatherer.py` file for manual data collection. Alternatively, use the `gather_news.yml` GitHub Action in `.github/workflows` for automated gathering.
+3. run `src/run_gatherers.py` for manual data collection. Alternatively, use the `gather_news.yml` GitHub Action in `.github/workflows` for automated gathering.
 
 
 4. add new sources by creating a script in `src/gatherer_sources/` that inherits from the appropriate gatherer type in `src/gatherer_types/`.
