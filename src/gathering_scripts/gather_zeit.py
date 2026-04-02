@@ -21,20 +21,6 @@ class Zeit(Gatherer):
         self.soup = self.get_soup()
 
 
-    def get_soup(self):
-        try:
-            response = requests.get(self.source)
-            self.logger.debug(f"status code: {response.status_code}")
-            self.logger.info("successfully reached %s", self.source)
-            soup = bs(response.text, "lxml")
-            
-            return soup
-        
-        except Exception as e:
-            self.logger.error("could not fetch HTML-soup successfully")
-            self.logger.error(f"{e}")
-
-
     def scrape_headlines(self):
         match = self.soup.find_all("section",
                                    class_="cp-area cp-area--headed",
