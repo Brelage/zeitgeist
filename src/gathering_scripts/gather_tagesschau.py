@@ -27,10 +27,12 @@ class Tagesschau(Gatherer):
             title = item["title"]
             text = item.get("content", [])
             link = item["detailsweb"]
-            content = ""
+            entries = []
             for entry in text[:4]:
-                content += entry.get("value", "")
-            content = self.dot_parse(self.clean_html_content(content))
+                value = self.clean_html_content(entry.get("value", "")).rstrip(". ")
+                if value:
+                    entries.append(value)
+            content = self.normalize_content(". ".join(entries))
             category = item.get("ressort")
             breaking_news = item["breakingNews"]
             
