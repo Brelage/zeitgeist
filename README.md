@@ -6,7 +6,7 @@ a news gatherer and archive, providing daily briefings and perspective.
 ## Features
 
 - using a GitHub Action, this project gathers a selection of news headlines and summaries.
-- the data gathering automation structure is scalable, with the same automation functioning even if more automation scripts for news sources are added in the gathering_scripts folder.
+- the data gathering automation structure is scalable, with the same automation functioning even if more automation scripts for news sources are added in the gatherer_sources folder.
 - every news piece is saved as a single line in a JSONL file, enabling natural language processing.
 
 
@@ -30,10 +30,10 @@ Setup
 `pip install -r requirements.txt`
 
 
-3. run the `src/gatherer.py` file for manual data collection. Alternatively, use the `gather_news.yml` GitHub Action in `.github/workflows` for automated gathering.
+3. run `src/run_gatherers.py` for manual data collection. Alternatively, use the `gather_news.yml` GitHub Action in `.github/workflows` for automated gathering.
 
 
-4. use the Gatherer class in utils.py to construct further gathering scripts.
+4. add new sources by creating a script in `src/gatherer_sources/` that inherits from the appropriate gatherer type in `src/gatherer_types/`.
 
 
 ## Planned features

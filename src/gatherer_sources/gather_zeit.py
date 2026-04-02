@@ -1,30 +1,28 @@
-import requests
 import sys
 from pathlib import Path
-from bs4 import BeautifulSoup as bs
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from utils import Gatherer
+from gatherer_types.gatherer_web import GathererWeb
+
 
 def main():
-    gatherer = Zeit()
+    gatherer = GatherZeit()
     gatherer.scrape_headlines()
     gatherer.scrape_most_read()
     gatherer.save_capsule()
 
 
-
-class Zeit(Gatherer):
+class GatherZeit(GathererWeb):
     def __init__(self):
         super().__init__()
         self.source = "https://www.zeit.de/index"
-        self.soup = self.get_soup()
+        self.soup = self.get_soup(self.source)
 
 
     def scrape_headlines(self):
         match = self.soup.find_all("section",
                                    class_="cp-area cp-area--headed",
-                                   attrs= {"data-ct-context": "headed-das_wichtigste_in_kuerze"})
+                                   attrs={"data-ct-context": "headed-das_wichtigste_in_kuerze"})
         headlines = match[0].find("div", class_="zon-markup-with-author__content")
         paragraphs = headlines.find_all("p")
         paragraphs[-1].decompose()
@@ -32,57 +30,52 @@ class Zeit(Gatherer):
 
         for paragraph in paragraphs:
             try:
-                # Extract components
                 strong_tag = paragraph.find("strong")
                 link_tag = paragraph.find("a")
-                
+
                 title = strong_tag.get_text().strip() if strong_tag else ""
                 url = link_tag.get("href") if link_tag else ""
-                
-                # Get full text and remove title part
+
                 full_text = paragraph.get_text()
                 if title:
                     content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
+                    content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
                 else:
                     content = self.normalize_content(full_text.strip())
-                
-                capsule_part = self.create_json_structure(
+
+                self.capsule.append(self.create_json_structure(
                     title=title,
                     content=content,
                     url=url,
                     source=self.source,
                     language="de",
-                    is_breaking_news=True
-                )
-                self.capsule.append(capsule_part)
-            
+                    is_breaking_news=True,
+                ))
 
             except Exception as e:
                 self.logger.error(f"Error processing paragraph: {e}")
                 continue
-            
+
         self.logger.info("successfully gathered headlines from 'Das Wichtigste in Kürze'")
 
 
     def scrape_most_read(self):
         match = self.soup.find_all("div", class_="cp-region cp-region--kpi-accordion kpi-area js-accordion")
-        
+
         if not match:
             self.logger.error("No accordion regions found")
             return
-        
-        # Find all accordion sections
+
         accordion_sections = match[0].find_all("section", class_="z-accordion kpi-area__section cp-area cp-area--kpi js-accordion__wrapper")
         self.logger.debug(f"Found {len(accordion_sections)} accordion sections")
-        
-        # Find the "Meistgelesen" section specifically
+
         most_read_section = None
         for section in accordion_sections:
             button = section.find("button", class_="z-accordion__button")
             if button and "Meistgelesen" in button.get_text():
                 most_read_section = section
                 break
-        
+
         if not most_read_section:
             self.logger.error("Could not find 'Meistgelesen' section")
             return
@@ -90,39 +83,32 @@ class Zeit(Gatherer):
         teaser_container = most_read_section.find("div", class_="kpi-area__teasers")
         if not teaser_container:
             self.logger.error("Could not find articles container")
-            return 
+            return
 
-        for article in (teaser_container.find_all("article", class_="zon-teaser")):
+        for article in teaser_container.find_all("article", class_="zon-teaser"):
             try:
-                # Extract topic (kicker text)
                 kicker_element = article.find("a", class_="zon-teaser__faux-link")
                 title = kicker_element.get_text().strip() if kicker_element else ""
-                
-                # Extract URL
+
                 link_element = article.find("a", class_="zon-teaser__link")
                 url = link_element.get("href") if link_element else ""
-                
-                # Extract description (summary text)
+
                 summary_element = article.find("p", class_="zon-teaser__summary")
                 content = self.normalize_content(summary_element.get_text().strip() if summary_element else "")
-                
-                # Create article dictionary
-                capsule_part = self.create_json_structure(
+
+                self.capsule.append(self.create_json_structure(
                     title=title,
                     content=content,
                     url=url,
                     source=self.source,
-                    language="de"
-                )
-                self.capsule.append(capsule_part)
-                
+                    language="de",
+                ))
+
             except Exception as e:
                 self.logger.error(f"Error processing article: {e}")
                 continue
 
-
         self.logger.info("Successfully extracted 'Meistgelesen' section")
-
 
 
 if __name__ == "__main__":

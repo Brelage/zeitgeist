@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: run script
-        run: python3 src/gatherer.py
+        run: python3 src/run_gatherers.py
 
       - name: Commit and push changes
         run: |
