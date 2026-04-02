@@ -39,6 +39,7 @@ class GatherZeit(GathererWeb):
                 full_text = paragraph.get_text()
                 if title:
                     content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
+                    content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
                 else:
                     content = self.normalize_content(full_text.strip())
 
