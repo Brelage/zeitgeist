@@ -5,7 +5,8 @@ import json
 import re
 import fcntl
 import inspect
-from bs4 import BeautifulSoup
+import requests
+from bs4 import BeautifulSoup as bs
 from pathlib import Path
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
@@ -66,12 +67,26 @@ class Gatherer:
         self.capsule = [] # list of JSON dictionaries. Each item is a line in the JSONL archive
 
 
+    def get_soup(self):
+        try:
+            response = requests.get(self.source)
+            self.logger.debug(f"status code: {response.status_code}")
+            self.logger.info("successfully reached %s", self.source)
+            soup = bs(response.text, "lxml")
+            
+            return soup
+        
+        except Exception as e:
+            self.logger.error("could not fetch HTML-soup successfully")
+            self.logger.error(f"{e}")
+
+
     def clean_html_content(self, html_text):
         """
         takes HTML and strips all formatting out, leaving only the pure text
         html_text: string with HTML
         """
-        soup = BeautifulSoup(html_text, 'lxml')
+        soup = bs(html_text, 'lxml')
         for script in soup(["script", "style"]):
             script.decompose()
         text = soup.get_text()
