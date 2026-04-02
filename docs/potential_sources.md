@@ -1,0 +1,18 @@
+- BILD https://www.bild.de
+- Süddeutsche Zeitung (SZ) https://www.sueddeutsche.de
+- Frankfurter Allgemeine Zeitung (FAZ) https://www.faz.net
+- Die Welt https://www.welt.de
+- Handelsblatt https://www.handelsblatt.com
+- Der Spiegel https://www.spiegel.de" 
+    - RSS Feed: https://www.spiegel.de/schlagzeilen/index.rss"
+- Focus Online https://www.focus.de
+- Tagesschau (ARD) https://www.tagesschau.de
+- Tagesspiegel https://www.tagesspiegel.de
+- taz (die tageszeitung) https://www.taz.de
+- n-tv Nachrichten https://www.n-tv.de
+- Deutschlandfunk (DLF) Nachrichten https://www.deutschlandfunk.de
+- Börsen-Zeitung
+- Der Aktionär
+- die TAZ
+- Cicero
+- brandeins 
