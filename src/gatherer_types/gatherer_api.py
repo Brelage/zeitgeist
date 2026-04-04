@@ -23,6 +23,10 @@ class GathererAPI(GathererBase):
         Returns:
             dict: parsed JSON response
         """
-        response = requests.get(url).json()
-        self.logger.info("reached API: %s", url)
-        return response
+        try:
+            response = requests.get(url)
+            self.logger.info("reached API: %s", url)
+            return response.json()
+        except Exception as e:
+            self.logger.error("could not fetch or parse API response from %s: %s", url, e)
+            return None
