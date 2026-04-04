@@ -2,8 +2,8 @@ name: gather news
 
 on:
   schedule:
-    # Runs every day at 19:00 UTC
-    - cron: '0 19 * * *'
+    # Runs every day at 18:00 UTC
+    - cron: '0 18 * * *'
   workflow_dispatch:
 
 jobs:
