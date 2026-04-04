@@ -1,4 +1,6 @@
 beautifulsoup4==4.13.4
+cloudscraper==1.2.71
+fake-useragent==2.2.0
 feedparser==6.0.11
 bs4==0.0.2
 certifi==2025.7.14

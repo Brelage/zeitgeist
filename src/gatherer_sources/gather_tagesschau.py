@@ -7,7 +7,11 @@ from gatherer_types.gatherer_api import GathererAPI
 
 def main():
     gatherer = GatherTagesschau()
-    gatherer.fetch_tagesschau_headlines()
+    data = gatherer.fetch(gatherer.source)
+    if data is None:
+        gatherer.logger.error("failed to fetch data from %s, aborting", gatherer.source)
+        return
+    gatherer.extract_news(data)
     gatherer.save_capsule()
 
 
@@ -15,10 +19,10 @@ class GatherTagesschau(GathererAPI):
     def __init__(self):
         super().__init__()
         self.source = "https://www.tagesschau.de/api2u/homepage/"
+        self.language = "de"
 
 
-    def fetch_tagesschau_headlines(self):
-        data = self.fetch(self.source)
+    def extract_news(self, data):
         news = data["news"]
 
         for item in news[:5]:
@@ -41,7 +45,7 @@ class GatherTagesschau(GathererAPI):
                 content,
                 link,
                 self.source,
-                language="de",
+                language=self.language,
                 category=category,
                 is_breaking_news=breaking_news,
             ))

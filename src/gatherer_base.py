@@ -4,11 +4,11 @@ import json
 import re
 import fcntl
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timezone
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+sys.path.append(str(Path(__file__).resolve().parents[0]))
 from utils import setup_logger
 
 
@@ -20,8 +20,8 @@ class GathererBase:
     rather than from this class directly.
     """
     def __init__(self):
-        self.logger = setup_logger(__name__)
-        self.today = datetime.now().date().isoformat()
+        self.logger = setup_logger(type(self).__name__)
+        self.today = datetime.now(timezone.utc).date().isoformat()
         self.archive = "workbench/archive_tester.jsonl" if self.logger.isEnabledFor(logging.DEBUG) else "data/archive.jsonl"
         self.capsule = []
 
