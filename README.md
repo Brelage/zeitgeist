@@ -35,6 +35,20 @@ Setup
 
 4. add new sources by creating a script in `src/gatherer_sources/` that inherits from the appropriate gatherer type in `src/gatherer_types/`.
 
+   Each source script follows a strict separation of configuration and behavior:
+   - `__init__` is for configuration only (setting `self.source`, `self.language`, etc.) — no network calls, no side effects
+   - fetching, parsing, and saving are explicit steps called in sequence by `main()`
+
+   ```python
+   def main():
+       gatherer = GatherExample()   # configure
+       gatherer.fetch()             # fetch
+       gatherer.extract()           # parse
+       gatherer.save_capsule()      # save
+   ```
+
+   This keeps instantiation safe regardless of network state, makes the execution sequence readable, and allows steps to be retried or skipped independently.
+
 
 ## Planned features
 
