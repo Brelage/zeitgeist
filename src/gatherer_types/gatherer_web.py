@@ -40,7 +40,7 @@ class GathererWeb(GathererBase):
             "User-Agent": ua.random,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "*",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Encoding": "gzip, deflate",
             "Connection": "keep-alive",
             "Cache-Control": "max-age=0",
         }

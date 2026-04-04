@@ -12,7 +12,7 @@ authors = [
 ]   
 
 dependencies = [
-    "beautifulsoup4==4.13.4",
+    "beautifulsoup4==4.14.3",
     "cloudscraper==1.2.71",
     "fake-useragent==2.2.0",
     "feedparser==6.0.11",
