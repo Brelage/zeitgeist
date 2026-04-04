@@ -7,8 +7,12 @@ from gatherer_types.gatherer_web import GathererWeb
 
 def main():
     gatherer = GatherZeit()
-    gatherer.scrape_headlines()
-    gatherer.scrape_most_read()
+    website = gatherer.fetch_website(gatherer.source)
+    if website is None:
+        gatherer.logger.error("failed to fetch data from %s, aborting", gatherer.source)
+        return
+    gatherer.scrape_headlines(website)
+    gatherer.scrape_most_read(website)
     gatherer.save_capsule()
 
 
@@ -16,11 +20,11 @@ class GatherZeit(GathererWeb):
     def __init__(self):
         super().__init__()
         self.source = "https://www.zeit.de/index"
-        self.soup = self.get_soup(self.source)
+        self.language = "de"
 
 
-    def scrape_headlines(self):
-        match = self.soup.find_all("section",
+    def scrape_headlines(self, website):
+        match = website.find_all("section",
                                    class_="cp-area cp-area--headed",
                                    attrs={"data-ct-context": "headed-das_wichtigste_in_kuerze"})
         headlines = match[0].find("div", class_="zon-markup-with-author__content")
@@ -39,7 +43,6 @@ class GatherZeit(GathererWeb):
                 full_text = paragraph.get_text()
                 if title:
                     content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
-                    content = self.normalize_content(full_text.replace(title, "", 1).strip().lstrip(':').strip())
                 else:
                     content = self.normalize_content(full_text.strip())
 
@@ -48,7 +51,7 @@ class GatherZeit(GathererWeb):
                     content=content,
                     url=url,
                     source=self.source,
-                    language="de",
+                    language=self.language,
                     is_breaking_news=True,
                 ))
 
@@ -59,8 +62,8 @@ class GatherZeit(GathererWeb):
         self.logger.info("successfully gathered headlines from 'Das Wichtigste in Kürze'")
 
 
-    def scrape_most_read(self):
-        match = self.soup.find_all("div", class_="cp-region cp-region--kpi-accordion kpi-area js-accordion")
+    def scrape_most_read(self, website):
+        match = website.find_all("div", class_="cp-region cp-region--kpi-accordion kpi-area js-accordion")
 
         if not match:
             self.logger.error("No accordion regions found")
@@ -101,7 +104,7 @@ class GatherZeit(GathererWeb):
                     content=content,
                     url=url,
                     source=self.source,
-                    language="de",
+                    language=self.language,
                 ))
 
             except Exception as e:
