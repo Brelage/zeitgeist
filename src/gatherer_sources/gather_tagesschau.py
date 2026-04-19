@@ -32,7 +32,7 @@ class GatherTagesschau(GathererAPI):
 
             entries = []
             for entry in text[:4]:
-                value = self.clean_html_content(entry.get("value", "")).rstrip()
+                value = self.clean_html_content(entry.get("value", "")).rstrip().rstrip('.')
                 if value:
                     entries.append(value)
             content = self.normalize_content(". ".join(entries))
