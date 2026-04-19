@@ -40,15 +40,15 @@ class GathererBase:
 
     def dot_parse(self, text):
         """
-        Inserts a space after every dot followed by an uppercase letter
-        (A-Z, Ä, Ö, Ü), unless already followed by whitespace, another dot,
-        a double quote, or a digit.
+        Fixes sentence spacing issues in raw text:
+        1. Collapses double dots that are not part of an ellipsis (...) to '. '
+        2. Inserts a space after any dot directly followed by an uppercase letter
+           (A-Z, Ä, Ö, Ü), unless already followed by whitespace, a dot, a
+           double quote, or a digit.
         """
-        return re.sub(
-            r'\.(?![\s."\d])(?=[A-ZÄÖÜ])',
-            '. ',
-            text
-        )
+        text = re.sub(r'(?<!\.)\.\.(?!\.)[ ]*', '. ', text)
+        text = re.sub(r'\.(?![\s."\d])(?=[A-ZÄÖÜ])', '. ', text)
+        return re.sub(r' {2,}', ' ', text)
 
 
     def normalize_content(self, text):
